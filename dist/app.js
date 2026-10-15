@@ -281,6 +281,7 @@ reportForm.addEventListener("submit", (event) => {
 });
 
 function showDetail(item) {
+  const existingFollowup = followups.find((entry) => String(entry.itemId) === String(item.id));
   const detail = document.getElementById("detailContent");
   detail.innerHTML = `
     <div class="detail-visual" style="--card-color:${escapeHTML(item.color || palette[item.category])}">
@@ -297,8 +298,8 @@ function showDetail(item) {
         <div>${icon("shield-check")}<span>Handoff<strong>Verify before meeting</strong></span></div>
       </div>
       <div class="contact-row">
-        <p>${item.mine ? "This is your report." : item.type === "lost" ? "Found it? Tell the owner where and when you saw it." : "Lost it? Describe a private detail that proves it is yours."}</p>
-        <button class="button button-dark" type="button" id="contactButton">${item.mine ? "Manage report" : item.type === "found" ? "This item is mine" : "I found this item"} ${icon("arrow-right")}</button>
+        <p>${item.mine ? "This is your report." : existingFollowup ? "Your follow-up is saved. Review or update the verification details." : item.type === "lost" ? "Found it? Tell the owner where and when you saw it." : "Lost it? Share details that only the real owner would know."}</p>
+        <button class="button button-dark" type="button" id="contactButton">${item.mine ? "Manage report" : existingFollowup ? "Review my follow-up" : item.type === "found" ? "It might be mine" : "I found this item"} ${icon("arrow-right")}</button>
       </div>
     </div>`;
   openModal(detailModal);
@@ -315,17 +316,30 @@ function showDetail(item) {
 
 function openFollowup(item) {
   const isClaim = item.type === "found";
+  const existing = followups.find((entry) => String(entry.itemId) === String(item.id));
   followupForm.reset();
+  followupForm.dataset.followupId = existing?.id || "";
   followupForm.elements.itemId.value = item.id;
   document.getElementById("followupKicker").textContent = isClaim ? "Claim a found item" : "Respond to a lost report";
-  document.getElementById("followupTitle").textContent = isClaim ? "This item is mine" : "I found this item";
+  document.getElementById("followupTitle").textContent = isClaim ? "Prove it may be yours" : "I found this item";
   document.getElementById("followupIntro").textContent = isClaim
     ? "Send the finder enough information to verify ownership without sharing sensitive details publicly."
     : "Tell the owner what you found and arrange a safe campus handoff.";
   document.getElementById("followupMessageLabel").textContent = isClaim ? "A detail only the owner would know" : "Where and when did you find it?";
   followupForm.elements.message.placeholder = isClaim ? "Describe a sticker, scratch, contents, or another private detail..." : "Share the exact location, time, and current safe location...";
   document.getElementById("followupHint").textContent = isClaim ? "Do not include passwords, card numbers, or other sensitive information." : "Keep the item with campus security or at a staffed desk when possible.";
-  document.getElementById("followupSubmit").firstChild.textContent = isClaim ? "Send ownership claim " : "Tell the owner I found it ";
+  document.querySelectorAll(".claim-only").forEach((field) => {
+    field.hidden = !isClaim;
+    field.querySelectorAll("input").forEach((input) => { input.required = isClaim; });
+  });
+  if (existing) {
+    followupForm.elements.name.value = existing.name || "";
+    followupForm.elements.email.value = existing.email || "";
+    followupForm.elements.message.value = existing.message || "";
+    followupForm.elements.lostLocation.value = existing.lostLocation || "";
+    followupForm.elements.lostDate.value = existing.lostDate || "";
+  }
+  document.getElementById("followupSubmit").firstChild.textContent = existing ? "Update follow-up " : isClaim ? "Send ownership claim " : "Tell the owner I found it ";
   document.getElementById("followupContext").innerHTML = `${icon(item.icon || "backpack")}<div><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.location)}</small></div>`;
   openModal(followupModal);
 }
@@ -335,20 +349,25 @@ followupForm.addEventListener("submit", (event) => {
   const data = new FormData(followupForm);
   const item = items.find((entry) => String(entry.id) === String(data.get("itemId")));
   if (!item) return;
-  followups.unshift({
-    id: `followup-${Date.now()}`,
+  const existingIndex = followups.findIndex((entry) => entry.id === followupForm.dataset.followupId);
+  const response = {
+    id: existingIndex >= 0 ? followups[existingIndex].id : `followup-${Date.now()}`,
     itemId: item.id,
     kind: item.type === "found" ? "ownership-claim" : "item-found",
     name: data.get("name").trim(),
     email: data.get("email").trim(),
     message: data.get("message").trim(),
+    lostLocation: data.get("lostLocation").trim(),
+    lostDate: data.get("lostDate"),
     createdAt: new Date().toISOString()
-  });
+  };
+  if (existingIndex >= 0) followups[existingIndex] = response;
+  else followups.unshift(response);
   try { localStorage.setItem("unifind-followups", JSON.stringify(followups)); } catch (_) { /* Browser storage may be unavailable. */ }
   updateFollowupCount();
   closeModal(followupModal);
   renderItems();
-  showToast(item.type === "found" ? "Ownership claim saved" : "Found-item follow-up saved", "You can track it under Follow-ups.");
+  showToast(existingIndex >= 0 ? "Follow-up updated" : item.type === "found" ? "Ownership claim saved" : "Found-item follow-up saved", "You can review it under Follow-ups.");
 });
 
 function updateFollowupCount() {
