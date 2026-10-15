@@ -348,7 +348,7 @@ followupForm.addEventListener("submit", (event) => {
   updateFollowupCount();
   closeModal(followupModal);
   renderItems();
-  showToast(item.type === "found" ? "Ownership claim sent" : "The owner was notified", item.type === "found" ? "You can track it under Follow-ups." : "Your follow-up is saved under Follow-ups.");
+  showToast(item.type === "found" ? "Ownership claim saved" : "Found-item follow-up saved", "You can track it under Follow-ups.");
 });
 
 function updateFollowupCount() {
