@@ -252,8 +252,11 @@
           <div class="field-grid">
             <label class="field"><span>Your name</span><input name="name" required maxlength="60" placeholder="Full name" /></label>
             <label class="field"><span>University email</span><input name="email" type="email" required maxlength="100" placeholder="name@university.edu" /></label>
-            <label class="field full"><span id="followupMessageLabel">Verification details</span><textarea name="message" required maxlength="400" rows="4"></textarea><small id="followupHint"></small></label>
+            <label class="field full"><span id="followupMessageLabel">Verification details</span><textarea name="message" required minlength="20" maxlength="400" rows="4"></textarea><small id="followupHint"></small></label>
+            <label class="field claim-only" hidden><span>Where did you lose it?</span><input name="lostLocation" maxlength="100" placeholder="Building, room, or campus area" /></label>
+            <label class="field claim-only" hidden><span>When did you last have it?</span><input name="lostDate" type="date" /></label>
           </div>
+          <div class="verification-note claim-only" hidden><span data-icon="lock"></span><p>These details help the finder compare your claim with the item before contacting you.</p></div>
           <div class="safe-handoff"><span data-icon="shield-check"></span><p>This prototype saves the follow-up in your browser. Arrange any handoff at a staffed campus location.</p></div>
           <button class="button button-dark submit-report" id="followupSubmit" type="submit">Send follow-up <span data-icon="arrow-right"></span></button>
         </form>
