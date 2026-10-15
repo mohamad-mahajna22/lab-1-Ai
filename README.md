@@ -14,5 +14,5 @@ npx serve dist
 
 ## Deploy
 
-The included GitHub Actions workflow publishes `dist` to GitHub Pages whenever the `main` branch changes. In the repository settings, set **Pages ג†’ Source** to **GitHub Actions** if GitHub does not select it automatically after the first workflow run.
+The included GitHub Actions workflow publishes `dist` to GitHub Pages whenever the `main` branch changes. In the repository settings, set **Pages > Source** to **GitHub Actions** if GitHub does not select it automatically after the first workflow run.
 
