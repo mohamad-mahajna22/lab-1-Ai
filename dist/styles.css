@@ -275,6 +275,11 @@ footer .nav-link { padding: 0; color: #c7d0cb; }
 .safe-handoff > span { flex: 0 0 auto; }
 .safe-handoff svg { width: 18px; }
 .safe-handoff p { margin: 0; font-size: 10px; line-height: 1.5; }
+.verification-note { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 12px 14px; border: 1px solid #c8ded0; border-radius: 12px; color: #315c49; background: #edf7f0; }
+.verification-note[hidden], .claim-only[hidden] { display: none; }
+.verification-note > span { flex: 0 0 auto; }
+.verification-note svg { width: 17px; }
+.verification-note p { margin: 0; font-size: 10px; line-height: 1.5; }
 .toast { position: fixed; z-index: 150; right: 25px; bottom: 25px; display: flex; align-items: center; gap: 12px; min-width: 290px; padding: 15px 18px; border-radius: 15px; color: white; background: var(--ink); box-shadow: var(--shadow); transform: translateY(130%); opacity: 0; transition: transform .35s ease, opacity .35s ease; }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast > span { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--ink); background: var(--mint); }
