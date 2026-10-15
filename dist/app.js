@@ -58,11 +58,14 @@ const sampleItems = [
 
 let storedItems = [];
 try { storedItems = JSON.parse(localStorage.getItem("unifind-reports") || "[]"); } catch (_) { storedItems = []; }
+let followups = [];
+try { followups = JSON.parse(localStorage.getItem("unifind-followups") || "[]"); } catch (_) { followups = []; }
 let items = [...storedItems, ...sampleItems];
 let activeStatus = "all";
 let activeCategory = "all";
 let searchTerm = "";
 let showingMine = false;
+let showingFollowups = false;
 
 const grid = document.getElementById("itemsGrid");
 const emptyState = document.getElementById("emptyState");
@@ -87,7 +90,8 @@ function filteredItems() {
     const haystack = `${item.title} ${item.location} ${item.category} ${item.description}`.toLowerCase();
     const textMatch = !searchTerm || haystack.includes(searchTerm);
     const mineMatch = !showingMine || item.mine;
-    return statusMatch && categoryMatch && textMatch && mineMatch;
+    const followupMatch = !showingFollowups || followups.some((entry) => String(entry.itemId) === String(item.id));
+    return statusMatch && categoryMatch && textMatch && mineMatch && followupMatch;
   });
 }
 
@@ -103,11 +107,13 @@ function renderItems() {
         <div class="item-meta"><span>${escapeHTML(item.category)}</span><span>${escapeHTML(relativeDate(item))}</span></div>
         <h3>${escapeHTML(item.title)}</h3>
         <div class="item-location">${icon("pin")}<span>${escapeHTML(item.location)}</span></div>
-        <div class="item-footer"><span>${item.mine ? "Your report" : "Campus report"}</span><button type="button" aria-label="View details">${icon("arrow-up-right")}</button></div>
+        <div class="item-footer"><span>${item.mine ? "Your report" : followups.some((entry) => String(entry.itemId) === String(item.id)) ? "Follow-up sent" : "Campus report"}</span><button type="button" aria-label="View details">${icon("arrow-up-right")}</button></div>
       </div>
     </article>
   `).join("");
-  resultsCount.textContent = `Showing ${visible.length} report${visible.length === 1 ? "" : "s"}${showingMine ? " from you" : ""}`;
+  resultsCount.textContent = `Showing ${visible.length} report${visible.length === 1 ? "" : "s"}${showingMine ? " from you" : showingFollowups ? " with your follow-ups" : ""}`;
+  emptyState.querySelector("h3").textContent = showingFollowups ? "No follow-ups sent yet" : showingMine ? "You have not posted a report yet" : "No reports match that search";
+  emptyState.querySelector("p").textContent = showingFollowups ? "Open a lost or found report to contact its reporter." : showingMine ? "Use Report an item to create your first campus report." : "Try another keyword or clear the filters.";
   emptyState.hidden = visible.length > 0;
   grid.hidden = visible.length === 0;
 }
@@ -117,6 +123,7 @@ function clearFilters() {
   activeCategory = "all";
   searchTerm = "";
   showingMine = false;
+  showingFollowups = false;
   document.getElementById("searchInput").value = "";
   document.querySelectorAll("#statusFilters button").forEach((b) => b.classList.toggle("active", b.dataset.status === "all"));
   document.querySelectorAll("#categoryFilters button").forEach((b) => b.classList.toggle("active", b.dataset.category === "all"));
@@ -128,6 +135,7 @@ document.getElementById("statusFilters").addEventListener("click", (event) => {
   if (!button) return;
   activeStatus = button.dataset.status;
   showingMine = false;
+  showingFollowups = false;
   document.querySelectorAll("#statusFilters button").forEach((b) => b.classList.toggle("active", b === button));
   renderItems();
 });
@@ -137,6 +145,7 @@ document.getElementById("categoryFilters").addEventListener("click", (event) => 
   if (!button) return;
   activeCategory = button.dataset.category;
   showingMine = false;
+  showingFollowups = false;
   document.querySelectorAll("#categoryFilters button").forEach((b) => b.classList.toggle("active", b === button));
   renderItems();
 });
@@ -145,6 +154,7 @@ document.getElementById("heroSearch").addEventListener("submit", (event) => {
   event.preventDefault();
   searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
   showingMine = false;
+  showingFollowups = false;
   renderItems();
   document.getElementById("browse").scrollIntoView({ behavior: "smooth" });
 });
@@ -158,6 +168,7 @@ document.getElementById("emptyClear").addEventListener("click", clearFilters);
 
 document.getElementById("myReportsButton").addEventListener("click", () => {
   showingMine = true;
+  showingFollowups = false;
   activeStatus = "all";
   activeCategory = "all";
   document.querySelectorAll("#statusFilters button").forEach((b) => b.classList.toggle("active", b.dataset.status === "all"));
@@ -167,9 +178,25 @@ document.getElementById("myReportsButton").addEventListener("click", () => {
   document.querySelector(".main-nav").classList.remove("open");
 });
 
+document.getElementById("followupsButton").addEventListener("click", () => {
+  showingFollowups = true;
+  showingMine = false;
+  activeStatus = "all";
+  activeCategory = "all";
+  searchTerm = "";
+  document.getElementById("searchInput").value = "";
+  document.querySelectorAll("#statusFilters button").forEach((b) => b.classList.toggle("active", b.dataset.status === "all"));
+  document.querySelectorAll("#categoryFilters button").forEach((b) => b.classList.toggle("active", b.dataset.category === "all"));
+  renderItems();
+  document.getElementById("browse").scrollIntoView({ behavior: "smooth" });
+  document.querySelector(".main-nav").classList.remove("open");
+});
+
 const reportModal = document.getElementById("reportModal");
 const detailModal = document.getElementById("detailModal");
+const followupModal = document.getElementById("followupModal");
 const reportForm = document.getElementById("reportForm");
+const followupForm = document.getElementById("followupForm");
 
 function openModal(modal) {
   modal.classList.add("open");
@@ -191,11 +218,13 @@ document.querySelectorAll(".open-report").forEach((button) => button.addEventLis
 }));
 document.querySelectorAll("[data-close-modal]").forEach((node) => node.addEventListener("click", () => closeModal(reportModal)));
 document.querySelectorAll("[data-close-detail]").forEach((node) => node.addEventListener("click", () => closeModal(detailModal)));
+document.querySelectorAll("[data-close-followup]").forEach((node) => node.addEventListener("click", () => closeModal(followupModal)));
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeModal(reportModal);
     closeModal(detailModal);
+    closeModal(followupModal);
   }
 });
 
@@ -268,15 +297,65 @@ function showDetail(item) {
         <div>${icon("shield-check")}<span>Handoff<strong>Verify before meeting</strong></span></div>
       </div>
       <div class="contact-row">
-        <p>${item.mine ? "This is your report." : "Think this item may be yours? Be ready to describe a private detail."}</p>
-        <button class="button button-dark" type="button" id="contactButton">${item.mine ? "Manage report" : item.type === "found" ? "This might be mine" : "I may have found it"} ${icon("arrow-right")}</button>
+        <p>${item.mine ? "This is your report." : item.type === "lost" ? "Found it? Tell the owner where and when you saw it." : "Lost it? Describe a private detail that proves it is yours."}</p>
+        <button class="button button-dark" type="button" id="contactButton">${item.mine ? "Manage report" : item.type === "found" ? "This item is mine" : "I found this item"} ${icon("arrow-right")}</button>
       </div>
     </div>`;
   openModal(detailModal);
   document.getElementById("contactButton").addEventListener("click", () => {
     closeModal(detailModal);
-    showToast(item.mine ? "Report is active" : "Contact request ready", item.mine ? "Students can now discover it in search." : "In a full campus launch, this securely messages the reporter.");
+    if (item.mine) {
+      const responses = followups.filter((entry) => String(entry.itemId) === String(item.id)).length;
+      showToast("Report is active", responses ? `${responses} follow-up${responses === 1 ? "" : "s"} received.` : "No follow-ups received yet.");
+    } else {
+      openFollowup(item);
+    }
   });
+}
+
+function openFollowup(item) {
+  const isClaim = item.type === "found";
+  followupForm.reset();
+  followupForm.elements.itemId.value = item.id;
+  document.getElementById("followupKicker").textContent = isClaim ? "Claim a found item" : "Respond to a lost report";
+  document.getElementById("followupTitle").textContent = isClaim ? "This item is mine" : "I found this item";
+  document.getElementById("followupIntro").textContent = isClaim
+    ? "Send the finder enough information to verify ownership without sharing sensitive details publicly."
+    : "Tell the owner what you found and arrange a safe campus handoff.";
+  document.getElementById("followupMessageLabel").textContent = isClaim ? "A detail only the owner would know" : "Where and when did you find it?";
+  followupForm.elements.message.placeholder = isClaim ? "Describe a sticker, scratch, contents, or another private detail..." : "Share the exact location, time, and current safe location...";
+  document.getElementById("followupHint").textContent = isClaim ? "Do not include passwords, card numbers, or other sensitive information." : "Keep the item with campus security or at a staffed desk when possible.";
+  document.getElementById("followupSubmit").firstChild.textContent = isClaim ? "Send ownership claim " : "Tell the owner I found it ";
+  document.getElementById("followupContext").innerHTML = `${icon(item.icon || "backpack")}<div><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.location)}</small></div>`;
+  openModal(followupModal);
+}
+
+followupForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const data = new FormData(followupForm);
+  const item = items.find((entry) => String(entry.id) === String(data.get("itemId")));
+  if (!item) return;
+  followups.unshift({
+    id: `followup-${Date.now()}`,
+    itemId: item.id,
+    kind: item.type === "found" ? "ownership-claim" : "item-found",
+    name: data.get("name").trim(),
+    email: data.get("email").trim(),
+    message: data.get("message").trim(),
+    createdAt: new Date().toISOString()
+  });
+  try { localStorage.setItem("unifind-followups", JSON.stringify(followups)); } catch (_) { /* Browser storage may be unavailable. */ }
+  updateFollowupCount();
+  closeModal(followupModal);
+  renderItems();
+  showToast(item.type === "found" ? "Ownership claim sent" : "The owner was notified", item.type === "found" ? "You can track it under Follow-ups." : "Your follow-up is saved under Follow-ups.");
+});
+
+function updateFollowupCount() {
+  const count = new Set(followups.map((entry) => String(entry.itemId))).size;
+  const badge = document.getElementById("followupsCount");
+  badge.textContent = count;
+  badge.hidden = count === 0;
 }
 
 grid.addEventListener("click", (event) => {
@@ -308,5 +387,6 @@ document.getElementById("mobileMenu").addEventListener("click", () => document.q
 document.querySelectorAll(".main-nav a").forEach((link) => link.addEventListener("click", () => document.querySelector(".main-nav").classList.remove("open")));
 
 reportForm.elements.date.valueAsDate = new Date();
+updateFollowupCount();
 renderItems();
 
