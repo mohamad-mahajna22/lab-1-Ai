@@ -292,7 +292,7 @@ body.modal-open { overflow: hidden; }
   .mobile-menu { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; }
   .mobile-menu svg { width: 19px; }
   .hero { display: block; min-height: auto; padding: 68px 24px 55px; }
-  h1 { font-size: clamp(55px, 16vw, 82px); }
+  h1 { max-width: 100%; font-size: clamp(54px, 14vw, 72px); line-height: .94; }
   .hero-content > p { font-size: 16px; }
   .hero-art { height: 430px; min-height: 0; margin-top: 55px; }
   .art-card-back { right: 5%; }.art-card-front { left: 5%; }
