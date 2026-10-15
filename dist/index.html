@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="UniFind helps university students report, find, and safely reclaim lost items on campus."
+    />
+    <meta name="theme-color" content="#f7f4ed" />
+    <title>UniFind ג€” Campus lost & found</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="UniFind home">
+        <span class="brand-mark" data-icon="search-heart" aria-hidden="true"></span>
+        <span>UniFind</span>
+      </a>
+
+      <button class="campus-picker" type="button" aria-label="Current campus">
+        <span class="campus-dot" aria-hidden="true"></span>
+        <span>Northbridge University</span>
+        <span data-icon="chevron-down" aria-hidden="true"></span>
+      </button>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a class="active" href="#browse">Browse</a>
+        <a href="#how-it-works">How it works</a>
+        <button class="nav-link" id="myReportsButton" type="button">My reports</button>
+      </nav>
+
+      <button class="button button-dark header-action open-report" type="button">
+        <span data-icon="plus" aria-hidden="true"></span>
+        <span class="button-label">Report an item</span>
+      </button>
+
+      <button class="mobile-menu" id="mobileMenu" type="button" aria-label="Open navigation">
+        <span data-icon="menu" aria-hidden="true"></span>
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-orbit orbit-one" aria-hidden="true"></div>
+        <div class="hero-orbit orbit-two" aria-hidden="true"></div>
+        <div class="hero-content">
+          <div class="eyebrow"><span></span> Made for campus life</div>
+          <h1 id="hero-title">Lost it? Letג€™s<br /><em>bring it back.</em></h1>
+          <p>
+            One trusted place for students to report missing items, spot found ones,
+            and reunite them with their owners.
+          </p>
+
+          <form class="hero-search" id="heroSearch" role="search">
+            <span data-icon="search" aria-hidden="true"></span>
+            <label class="sr-only" for="searchInput">Search lost and found items</label>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="What are you looking for?"
+              autocomplete="off"
+            />
+            <button type="submit" aria-label="Search">
+              <span data-icon="arrow-right" aria-hidden="true"></span>
+            </button>
+          </form>
+
+          <div class="quick-actions" aria-label="Quick report actions">
+            <button class="text-action open-report" type="button" data-report-type="lost">
+              <span class="action-icon coral" data-icon="search" aria-hidden="true"></span>
+              I lost something
+              <span data-icon="arrow-up-right" aria-hidden="true"></span>
+            </button>
+            <span class="action-divider" aria-hidden="true"></span>
+            <button class="text-action open-report" type="button" data-report-type="found">
+              <span class="action-icon mint" data-icon="sparkles" aria-hidden="true"></span>
+              I found something
+              <span data-icon="arrow-up-right" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-card art-card-back">
+            <div class="mini-label"><span></span> Found</div>
+            <div class="art-object earbuds-art">
+              <span class="earbud left"></span><span class="earbud right"></span>
+              <span class="earbud-case"></span>
+            </div>
+            <strong>Wireless earbuds</strong>
+            <small>Engineering Hall ֲ· Today</small>
+          </div>
+          <div class="art-card art-card-front">
+            <div class="mini-label lost-label"><span></span> Lost</div>
+            <div class="art-object bottle-art">
+              <span class="bottle-lid"></span><span class="bottle-body"></span>
+            </div>
+            <strong>Green water bottle</strong>
+            <small>Main Library ֲ· Yesterday</small>
+          </div>
+          <div class="match-badge">
+            <span data-icon="check" aria-hidden="true"></span>
+            <div><strong>Itג€™s a match!</strong><small>Owner contacted</small></div>
+          </div>
+          <svg class="doodle" viewBox="0 0 140 90" fill="none">
+            <path d="M5 75C25 25 73 98 105 30" />
+            <path d="m92 36 16-9 3 18" />
+          </svg>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Community results">
+        <div><strong>127</strong><span>items returned</span></div>
+        <div><strong>2.4 days</strong><span>average reunion</span></div>
+        <div><strong>34</strong><span>active reports</span></div>
+        <p><span class="avatar-stack" aria-hidden="true"><i>A</i><i>M</i><i>S</i></span> Join 2,800+ students helping each other</p>
+      </section>
+
+      <section class="browse-section" id="browse" aria-labelledby="browse-title">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow"><span></span> Around campus</div>
+            <h2 id="browse-title">Recent reports</h2>
+          </div>
+          <div class="view-toggle" role="group" aria-label="Listing view">
+            <button class="active" type="button" aria-label="Grid view"><span data-icon="grid"></span></button>
+            <button type="button" aria-label="List view" disabled><span data-icon="list"></span></button>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <div class="segmented" id="statusFilters" role="group" aria-label="Filter by report type">
+            <button class="active" type="button" data-status="all">All items</button>
+            <button type="button" data-status="lost">Lost</button>
+            <button type="button" data-status="found">Found</button>
+          </div>
+          <div class="category-filters" id="categoryFilters" aria-label="Filter by category">
+            <button class="active" type="button" data-category="all">Everything</button>
+            <button type="button" data-category="electronics">Electronics</button>
+            <button type="button" data-category="accessories">Accessories</button>
+            <button type="button" data-category="books">Books</button>
+            <button type="button" data-category="keys">Keys</button>
+            <button type="button" data-category="other">Other</button>
+          </div>
+        </div>
+
+        <div class="results-line" aria-live="polite">
+          <span id="resultsCount">Showing 6 reports</span>
+          <button id="clearFilters" type="button">Clear filters</button>
+        </div>
+
+        <div class="items-grid" id="itemsGrid"></div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <span data-icon="search"></span>
+          <h3>No reports match that search</h3>
+          <p>Try another keyword or clear the filters.</p>
+          <button class="button button-dark" id="emptyClear" type="button">Show all reports</button>
+        </div>
+      </section>
+
+      <section class="safety-note" aria-label="Safety advice">
+        <span class="safety-icon" data-icon="shield-check" aria-hidden="true"></span>
+        <div>
+          <strong>Keep the proof in the details.</strong>
+          <p>Leave one unique detail out of your public post. Ask the claimant to name it before you arrange a handoff.</p>
+        </div>
+        <a href="#how-it-works">See our safe return guide <span data-icon="arrow-right"></span></a>
+      </section>
+
+      <section class="how-section" id="how-it-works" aria-labelledby="how-title">
+        <div class="how-intro">
+          <div class="eyebrow light"><span></span> Simple by design</div>
+          <h2 id="how-title">From missing<br />to <em>found.</em></h2>
+          <p>UniFind keeps the process quick, private, and easy for everyone on campus.</p>
+          <button class="button button-light open-report" type="button">Post a report <span data-icon="arrow-right"></span></button>
+        </div>
+        <ol class="steps">
+          <li><span class="step-number">01</span><span class="step-icon" data-icon="file-plus"></span><div><strong>Post the essentials</strong><p>Add what happened, where, and when. A clear photo helps.</p></div></li>
+          <li><span class="step-number">02</span><span class="step-icon" data-icon="scan-search"></span><div><strong>Spot a likely match</strong><p>Search by item, category, or the campus location where it went missing.</p></div></li>
+          <li><span class="step-number">03</span><span class="step-icon" data-icon="handshake"></span><div><strong>Return it safely</strong><p>Verify one private detail, then meet at a staffed campus location.</p></div></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#top"><span class="brand-mark" data-icon="search-heart"></span><span>UniFind</span></a>
+      <p>Made for students who look out for each other.</p>
+      <div><a href="#browse">Browse</a><a href="#how-it-works">Safety</a><button class="nav-link open-report" type="button">Report item</button></div>
+    </footer>
+
+    <div class="modal-shell" id="reportModal" aria-hidden="true">
+      <div class="modal-backdrop" data-close-modal></div>
+      <section class="modal report-modal" role="dialog" aria-modal="true" aria-labelledby="report-title">
+        <button class="modal-close" type="button" data-close-modal aria-label="Close report form"><span data-icon="x"></span></button>
+        <div class="modal-kicker">New campus report</div>
+        <h2 id="report-title">What happened?</h2>
+        <p class="modal-intro">Share the useful details. You can keep identifying information private.</p>
+
+        <form id="reportForm">
+          <div class="type-choice" role="group" aria-label="Report type">
+            <label><input type="radio" name="type" value="lost" checked /><span><i data-icon="search"></i><strong>I lost it</strong><small>Ask the campus for help</small></span></label>
+            <label><input type="radio" name="type" value="found" /><span><i data-icon="sparkles"></i><strong>I found it</strong><small>Help locate its owner</small></span></label>
+          </div>
+
+          <div class="photo-field">
+            <input id="photoInput" name="photo" type="file" accept="image/*" />
+            <label for="photoInput" id="photoLabel">
+              <span data-icon="image-plus"></span>
+              <strong>Add a photo</strong>
+              <small>Optional ֲ· JPG or PNG</small>
+            </label>
+            <img id="photoPreview" alt="Selected item preview" hidden />
+          </div>
+
+          <div class="field-grid">
+            <label class="field full"><span>Item name</span><input name="title" required maxlength="60" placeholder="e.g. Black wireless headphones" /></label>
+            <label class="field"><span>Category</span><select name="category" required><option value="electronics">Electronics</option><option value="accessories">Accessories</option><option value="books">Books</option><option value="keys">Keys</option><option value="other">Other</option></select></label>
+            <label class="field"><span>Date</span><input name="date" type="date" required /></label>
+            <label class="field full"><span>Campus location</span><input name="location" required maxlength="80" placeholder="e.g. Main Library, 2nd floor" /></label>
+            <label class="field full"><span>Public description</span><textarea name="description" required maxlength="280" rows="3" placeholder="Color, brand, and where you last saw it..."></textarea></label>
+            <label class="field full private-field"><span><i data-icon="lock"></i> Private identifying detail</span><input name="privateDetail" maxlength="100" placeholder="A scratch, sticker, serial number..." /><small>Only use this to verify a claimant. It wonג€™t appear publicly.</small></label>
+          </div>
+          <button class="button button-dark submit-report" type="submit">Publish report <span data-icon="arrow-right"></span></button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-shell" id="detailModal" aria-hidden="true">
+      <div class="modal-backdrop" data-close-detail></div>
+      <section class="modal detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <button class="modal-close" type="button" data-close-detail aria-label="Close item details"><span data-icon="x"></span></button>
+        <div id="detailContent"></div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <span data-icon="check"></span><div><strong>Report published</strong><small>Your item is now visible on the board.</small></div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+
