@@ -48,11 +48,11 @@ const palette = {
 };
 
 const sampleItems = [
-  { id: 1, type: "found", title: "Wireless headphones", category: "electronics", location: "Engineering Hall ֲ· Room 204", daysAgo: 0, icon: "headphones", color: "#add3e4", description: "Black over-ear headphones found beneath a desk after the afternoon circuits lecture." },
-  { id: 2, type: "lost", title: "Green water bottle", category: "other", location: "Main Library ֲ· 2nd floor", daysAgo: 1, icon: "bottle", color: "#b7d2a3", description: "Dark green metal bottle with a loop lid. I last had it near the silent study area." },
-  { id: 3, type: "found", title: "Brown card wallet", category: "accessories", location: "Student Center ֲ· East lobby", daysAgo: 1, icon: "wallet", color: "#e8bcae", description: "Slim brown card wallet found beside the vending machines. Cards are safely inside." },
-  { id: 4, type: "lost", title: "Biology lab notebook", category: "books", location: "Science Building ֲ· Lab 3", daysAgo: 2, icon: "book", color: "#cbb9e6", description: "A5 black notebook filled with handwritten biology notes and a few colored tabs." },
-  { id: 5, type: "found", title: "Keys with blue tag", category: "keys", location: "Athletics Center ֲ· Entrance", daysAgo: 2, icon: "keys", color: "#ead06e", description: "Three keys on a metal ring with a rectangular blue plastic tag." },
+  { id: 1, type: "found", title: "Wireless headphones", category: "electronics", location: "Engineering Hall \u00b7 Room 204", daysAgo: 0, icon: "headphones", color: "#add3e4", description: "Black over-ear headphones found beneath a desk after the afternoon circuits lecture." },
+  { id: 2, type: "lost", title: "Green water bottle", category: "other", location: "Main Library \u00b7 2nd floor", daysAgo: 1, icon: "bottle", color: "#b7d2a3", description: "Dark green metal bottle with a loop lid. I last had it near the silent study area." },
+  { id: 3, type: "found", title: "Brown card wallet", category: "accessories", location: "Student Center \u00b7 East lobby", daysAgo: 1, icon: "wallet", color: "#e8bcae", description: "Slim brown card wallet found beside the vending machines. Cards are safely inside." },
+  { id: 4, type: "lost", title: "Biology lab notebook", category: "books", location: "Science Building \u00b7 Lab 3", daysAgo: 2, icon: "book", color: "#cbb9e6", description: "A5 black notebook filled with handwritten biology notes and a few colored tabs." },
+  { id: 5, type: "found", title: "Keys with blue tag", category: "keys", location: "Athletics Center \u00b7 Entrance", daysAgo: 2, icon: "keys", color: "#ead06e", description: "Three keys on a metal ring with a rectangular blue plastic tag." },
   { id: 6, type: "lost", title: "Round reading glasses", category: "accessories", location: "Humanities Quad", daysAgo: 3, icon: "glasses", color: "#d4c4ac", description: "Thin, dark metal frames in a soft gray case. Possibly left on an outdoor bench." }
 ];
 
